@@ -8,7 +8,7 @@ pipeline{
         stage('Pull Source Code from GitHub') {
             steps {
                 git branch: 'main',
-                credentialsId: '73cd0979-f0e7-4777-acb0-f2c3aacc63d0', 
+                credentialsId: 'git', 
                 url: 'https://github.com/CloudHight/Pet-Adoption-Containerisation-Project-Application-Day-Team.git'
             }
         }
@@ -27,7 +27,7 @@ pipeline{
         }
         stage('DockerBuild'){
             steps{
-                sh 'bash && docker build -t cloudhight/pipeline:1.0.1 .'
+                sh 'bash && docker build -t cloudhight/pipeline:1.0.0 .'
             }
         }
         stage('DockerLogin') {
@@ -37,13 +37,13 @@ pipeline{
         }
         stage('DockerPush') {
             steps{
-                sh 'docker push cloudhight/pipeline:1.0.1'
+                sh 'docker push cloudhight/pipeline:1.0.0'
             }
         }
         stage('Deploy') {
              steps {
-               sshagent (['ansible_creds']) {
-                   sh 'ssh -t -t ec2-user@10.0.2.17 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook MyPlaybook.yaml"'
+               sshagent (['ansible_cred']) {
+                   sh 'ssh -t -t ec2-user@10.0.3.246 -o strictHostKeyChecking=no "cd /etc/ansible && ansible-playbook MyPlaybook.yaml"'
                 }
             }
         }
